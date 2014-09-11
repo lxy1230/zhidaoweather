@@ -15,7 +15,7 @@ public class WeatherDB
 	/**
 	 * 数据库名
 	 */
-	public static final String DB_NAME = "zhidao_weather";
+	public static final String DB_NAME = "zhidao_weather.db";
 	
 	/**
 	 * 数据库版本
@@ -73,7 +73,7 @@ public class WeatherDB
 				Province province = new Province();
 				province.setId(cursor.getInt(cursor.getColumnIndex("id")));
 				province.setProvinceName(cursor.getString(cursor.getColumnIndex("province_name")));
-				province.setProvinceName(cursor.getString(cursor.getColumnIndex("province_code")));
+				province.setProvinceCode(cursor.getString(cursor.getColumnIndex("province_code")));
 				list.add(province);
 			}while(cursor.moveToNext());
 		}
@@ -109,7 +109,7 @@ public class WeatherDB
 				City city = new City();
 				city.setId(cursor.getInt(cursor.getColumnIndex("id")));
 				city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
-				city.setCityName(cursor.getString(cursor.getColumnIndex("city_code")));
+				city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
 				city.setProvinceId(provinceId);
 				list.add(city);
 			}while(cursor.moveToNext());
@@ -139,13 +139,13 @@ public class WeatherDB
 	{
 		List<County> list = new ArrayList<County>();
 		Cursor cursor = db.query("County", null, "city_id=?", new String[]{String.valueOf(cityId)}, null, null, null);
-		if(cursor != null)
+		if(cursor.moveToFirst())
 		{
 			do{
 				County county = new County();
-				county.setId(cursor.getColumnIndex("id"));
+				county.setId(cursor.getInt(cursor.getColumnIndex("id")));
 				county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-				county.setCountyName(cursor.getString(cursor.getColumnIndex("county_code")));
+				county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
 				county.setCityId(cityId);
 				list.add(county);
 			}while(cursor.moveToNext());
