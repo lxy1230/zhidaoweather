@@ -107,9 +107,11 @@ public class Utility
 			String weatherCode = weatherInfo.getString("cityid");
 			String temp1 = weatherInfo.getString("temp1");
 			String temp2 = weatherInfo.getString("temp2");
+			String img1 = weatherInfo.getString("img1");
+			String img2 = weatherInfo.getString("img2");
 			String weatherDesc = weatherInfo.getString("weather");
 			String publishTime = weatherInfo.getString("ptime");
-			saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,weatherDesc,publishTime);
+			saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,img1,img2,weatherDesc,publishTime);
 		}
 		catch (JSONException e)
 		{
@@ -123,7 +125,7 @@ public class Utility
 	 * 将服务器返回并解析的JSON数据保存到SharedPreferences文件中
 	 */
 	private static void saveWeatherInfo(Context context, String cityName,
-			String weatherCode, String temp1, String temp2, String weatherDesc,
+			String weatherCode, String temp1, String temp2, String img1, String img2, String weatherDesc,
 			String publishTime)
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日    E",Locale.CHINA);
@@ -133,6 +135,8 @@ public class Utility
 		editor.putString("weather_code", weatherCode);
 		editor.putString("temp1", temp1);
 		editor.putString("temp2", temp2);
+		editor.putString("img1", img1);
+		editor.putString("img2", img2);
 		editor.putString("weather_desc", weatherDesc);
 		editor.putString("publish_time", publishTime);
 		editor.putString("current_date", sdf.format(new Date()));

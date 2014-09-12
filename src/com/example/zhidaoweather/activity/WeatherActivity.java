@@ -1,15 +1,23 @@
 package com.example.zhidaoweather.activity;
 
+import java.net.URL;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,10 +35,24 @@ public class WeatherActivity extends Activity implements OnClickListener
 	private TextView tv_weatherDesc;
 	private TextView tv_temp1;
 	private TextView tv_temp2;
+	private ImageView iv_img1;
+	private ImageView iv_img2;
 	private TextView tv_currentDate;
 	private Button bt_switchCity;
 	private Button bt_refreshWeather;
+	private Bitmap bmp1,bmp2;
 	
+	@SuppressLint("HandlerLeak") private Handler handler = new Handler()
+	{
+		public void handleMessage(Message msg) 
+		{
+			if(msg.what == 1)
+			{
+				iv_img1.setImageBitmap(bmp1);
+				iv_img2.setImageBitmap(bmp2);
+			}
+		}
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -66,6 +88,8 @@ public class WeatherActivity extends Activity implements OnClickListener
 		tv_publishTime = (TextView) findViewById(R.id.tv_publishTime);
 		tv_temp1 = (TextView) findViewById(R.id.tv_temp1);
 		tv_temp2 = (TextView) findViewById(R.id.tv_temp2);
+		iv_img1 = (ImageView) findViewById(R.id.iv_img1);
+		iv_img2 = (ImageView) findViewById(R.id.iv_img2);
 		tv_weatherDesc = (TextView) findViewById(R.id.tv_weatherDesc);
 		bt_switchCity = (Button) findViewById(R.id.bt_switchCity);
 		bt_refreshWeather = (Button) findViewById(R.id.bt_refreshWeather);
@@ -169,6 +193,7 @@ public class WeatherActivity extends Activity implements OnClickListener
 		tv_cityName.setText(sdf.getString("city_name", ""));
 		tv_temp1.setText(sdf.getString("temp1", ""));
 		tv_temp2.setText(sdf.getString("temp2", ""));
+		setImage(sdf);
 		tv_weatherDesc.setText(sdf.getString("weather_desc", ""));
 		tv_publishTime.setText("发布时间: "+sdf.getString("publish_time", ""));
 		tv_currentDate.setText(sdf.getString("current_date", ""));
@@ -176,5 +201,31 @@ public class WeatherActivity extends Activity implements OnClickListener
 		tv_cityName.setVisibility(View.VISIBLE);
 		Intent service = new Intent(this,AutoUpdateService.class);
 		startService(service);
+	}
+	private void setImage(final SharedPreferences sdf)
+	{
+		new Thread()
+		{
+			@Override
+			public void run()
+			{
+				Message msg = new Message();
+				msg.what = 1;
+				String imgUrl1 = "http://m.weather.com.cn/img/"+sdf.getString("img1", null);
+				String imgUrl2 = "http://m.weather.com.cn/img/"+sdf.getString("img2", null);
+				try
+				{
+					URL imgURL1 = new URL(imgUrl1);
+					URL imgURL2 = new URL(imgUrl2);
+					bmp1 = BitmapFactory.decodeStream(imgURL1.openStream());
+					bmp2 = BitmapFactory.decodeStream(imgURL2.openStream());
+					handler.sendMessage(msg);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 }
