@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.zhidaoweather.R;
+import com.example.zhidaoweather.service.AutoUpdateService;
 import com.example.zhidaoweather.util.HttpCallbackListener;
 import com.example.zhidaoweather.util.HttpUtil;
 import com.example.zhidaoweather.util.Utility;
@@ -166,12 +167,14 @@ public class WeatherActivity extends Activity implements OnClickListener
 	{
 		SharedPreferences sdf = PreferenceManager.getDefaultSharedPreferences(this);
 		tv_cityName.setText(sdf.getString("city_name", ""));
-		tv_temp1.setText(sdf.getString("temp2", ""));
-		tv_temp2.setText(sdf.getString("temp1", ""));
+		tv_temp1.setText(sdf.getString("temp1", ""));
+		tv_temp2.setText(sdf.getString("temp2", ""));
 		tv_weatherDesc.setText(sdf.getString("weather_desc", ""));
 		tv_publishTime.setText("发布时间: "+sdf.getString("publish_time", ""));
 		tv_currentDate.setText(sdf.getString("current_date", ""));
 		ll_weatherInfo.setVisibility(View.VISIBLE);
 		tv_cityName.setVisibility(View.VISIBLE);
+		Intent service = new Intent(this,AutoUpdateService.class);
+		startService(service);
 	}
 }
