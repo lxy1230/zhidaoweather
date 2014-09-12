@@ -126,7 +126,7 @@ public class Utility
 			String weatherCode, String temp1, String temp2, String weatherDesc,
 			String publishTime)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日",Locale.CHINA);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日    E",Locale.CHINA);
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		editor.putBoolean("city_selected", true);
 		editor.putString("city_name", cityName);
